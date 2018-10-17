@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huatec.edu.entity.UserMapper">
+	<!-- 
+		type:表示映射的类型
+		id:表示主键映射
+		result:表示非主键映射
+	 -->
+	<resultMap type="User" id="userMapping">
+		<id column="u_id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="age" property="age"/>
+		<result column="address" property="address"/>
+	</resultMap>
+
+	<insert id="save" keyColumn="id" keyProperty="id" 
+			useGeneratedKeys="true" parameterType="User">
+		insert into t_user (username, password) values (#{username}, #{password})
+	</insert>
+	
+	<update id="update" parameterType="User">
+		update t_user set username = #{username} where id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="long">
+		delete from t_user where id = #{user_id}
+	</delete>
+	
+	<select id="getUserById" parameterType="long" resultMap="userMapping">
+		select * from t_user where u_id = #{user_id}
+	</select>
+	
+	<select id="list" resultMap="userMapping">
+		select * from t_user
+	</select>
+	<!-- 查询出地址不为空且年龄大于18的江苏籍用户 -->
+	<select id="getUserByAddress" resultMap="userMapping" parameterType="User">
+		select * from t_user where age > 18
+		<if test="address != null">
+			and address like #{address}
+		</if>
+	</select>
+	
+</mapper>
